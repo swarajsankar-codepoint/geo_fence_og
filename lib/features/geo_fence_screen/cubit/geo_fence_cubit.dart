@@ -216,7 +216,6 @@ class GeofenceCubit extends Cubit<GeofenceState> {
   }
 
   void _startLocationStream() async {
-    // Check service and permission before starting stream
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     debugPrint('Location service enabled: $serviceEnabled');
 
@@ -265,19 +264,19 @@ class GeofenceCubit extends Cubit<GeofenceState> {
             });
   }
 
-  Future<void> _checkLocationAndRestart() async {
-    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (serviceEnabled) {
-      debugPrint('Location service re-enabled — restarting stream');
-      _positionStream?.cancel();
-      _startLocationStream();
-    } else {
-      debugPrint('Location service still disabled — retrying in 5s');
-      Future.delayed(const Duration(seconds: 5), () {
-        _checkLocationAndRestart();
-      });
-    }
-  }
+  // Future<void> _checkLocationAndRestart() async {
+  //   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (serviceEnabled) {
+  //     debugPrint('Location service re-enabled — restarting stream');
+  //     _positionStream?.cancel();
+  //     _startLocationStream();
+  //   } else {
+  //     debugPrint('Location service still disabled — retrying in 5s');
+  //     Future.delayed(const Duration(seconds: 5), () {
+  //       _checkLocationAndRestart();
+  //     });
+  //   }
+  // }
 
   void _processPosition(Position pos) {
     final isInside = _isInsidePolygon(
@@ -376,6 +375,8 @@ class GeofenceCubit extends Cubit<GeofenceState> {
 
   Future<void> startService() async {
     await _loadZoneFromRemoteConfig();
+    await Permission.location.request();
+    await Permission.locationAlways.request();
     await _registerNativeGeofence();
     _serviceTriggered = await _startForegroundService();
     _startLocationStream();

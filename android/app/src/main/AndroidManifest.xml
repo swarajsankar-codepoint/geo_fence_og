@@ -53,6 +53,25 @@
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <!-- Add inside <application> -->
+        <receiver
+            android:name="com.example.native_geofence.NativeGeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name="com.example.native_geofence.NativeGeofenceRebootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.example.native_geofence.NativeGeofenceForegroundService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
 
         <!-- geofence_foreground_service (used when app is alive) -->
         <service

@@ -1,15 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geofence_foreground_service/constants/geofence_event_type.dart';
 import 'package:geofence_foreground_service/geofence_foreground_service.dart';
 
 import 'core/util/notification_service.dart';
 import 'core/util/remote_config.dart';
-import 'features/geo_fence_screen/cubit/geo_fence_cubit.dart';
-import 'features/geo_fence_screen/view/geo_fence_screen.dart';
 import 'firebase_options.dart';
+import 'native_geo_fence_package/selection_scren.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() async {
@@ -49,44 +47,15 @@ void callbackDispatcher() async {
 }
 
 void main() async {
-  debugPrint('STEP 1: binding');
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await RemoteConfigService.init();
+  await initNotifications();
 
-  debugPrint('STEP 2: firebase init');
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    debugPrint('STEP 2: firebase ok');
-  } catch (e) {
-    debugPrint('STEP 2 ERROR: $e');
-  }
-
-  debugPrint('STEP 3: remote config');
-  try {
-    await RemoteConfigService.init();
-    debugPrint('STEP 3: remote config ok');
-  } catch (e) {
-    debugPrint('STEP 3 ERROR: $e');
-  }
-
-  debugPrint('STEP 4: notifications');
-  try {
-    await initNotifications();
-    debugPrint('STEP 4: notifications ok');
-  } catch (e) {
-    debugPrint('STEP 4 ERROR: $e');
-  }
-
-  debugPrint('STEP 5: runApp');
   runApp(
-    BlocProvider(
-      create: (_) => GeofenceCubit()..init(callbackDispatcher),
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: GeofenceView(),
-      ),
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SelectionScreen(),
     ),
   );
-  debugPrint('STEP 5: runApp ok');
 }
