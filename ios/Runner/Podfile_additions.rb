@@ -1,7 +1,7 @@
 # ios/Podfile
 # Add Firebase Remote Config pod
 
-platform :ios, '14.0'  # minimum iOS 13 for BGTaskScheduler
+platform :ios, '13.0'  # minimum iOS 13 for BGTaskScheduler
 
 # ... your existing content ...
 
